@@ -1,8 +1,16 @@
 
 // create server
-const express = require('express');;
+const express = require('express');
 const app = express();
 const port = 3000;
+
+const mongoose = require('mongoose')
+const Contact = require("./models/contacts.models")
+
+mongoose.connect('mongodb://127.0.0.1:27017/contacts-crud')
+.then(() => console.log("Connection Success"))
+
+
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
