@@ -4,13 +4,11 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-const mongoose = require('mongoose')
-const Contact = require("./models/contacts.models")
+const mongoose = require('mongoose');
+const Contact = require("./models/contacts.models");
 
 mongoose.connect('mongodb://127.0.0.1:27017/contacts-crud')
-.then(() => console.log("Connection Success"))
-
-
+.then(() => console.log("Connection Success"));
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
@@ -22,12 +20,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
 
 // routes
-app.get('/', (req, res) => {
-  res.render('home');
+app.get('/',async (req, res) => {
+  const contacts = await Contact.find()
+  // res.json(contacts);
+  res.render('home', {contacts});
 });
 
-app.get('/show-contact', (req, res) => {
-    res.render('show-contact');
+app.get('/show-contact/:id',async (req, res) => {
+    const contact = await Contact.findById({ _id: req.params.id})
+    // res.json(contact)
+    res.render('show-contact', ({contact}));
 });
 
 app.get('/add-contact', (req, res) => {
