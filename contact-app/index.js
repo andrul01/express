@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+// Connection 
 const mongoose = require('mongoose');
 const Contact = require("./models/contacts.models");
 
@@ -33,7 +34,27 @@ app.get('/show-contact/:id',async (req, res) => {
 });
 
 app.get('/add-contact', (req, res) => {
-  res.render('add-contact');
+  res.render('add-contact')
+});
+
+app.post('/add-contact',async (req, res) => {
+
+  // for json data
+  // res.send(req.body)
+  
+  const contact = await Contact.insertOne({ 
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      email: req.body.email,
+      phone: req.body.phone,
+      address: req.body.address
+   })
+
+  // mongoose method for minimum code 
+  // await Contact.create(req.body)
+
+  res.redirect("/")
+
 });
 
 app.get('/update-contact', (req, res) => {
