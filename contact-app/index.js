@@ -4,16 +4,16 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+}); 
+
 // Connection 
 const mongoose = require('mongoose');
 const Contact = require("./models/contacts.models");
 
 mongoose.connect('mongodb://127.0.0.1:27017/contacts-crud')
 .then(() => console.log("Connection Success"));
-
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-}); 
 
 // middleware
 app.set('view engine', 'ejs')
