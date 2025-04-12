@@ -16,52 +16,66 @@ app.listen(port, () => {
 }); 
 
 // middleware
-app.set('view engine', 'ejs');
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static('public'));
+app.set('view engine', 'ejs')
+app.use(express.urlencoded({ extended: false }))
+app.use(express.static('public'))
+
 
 // routes
+// Home
 app.get('/',async (req, res) => {
   const contacts = await Contact.find()
   // res.json(contacts);
-  res.render('home', {contacts});
+  res.render('home', {contacts})
 });
 
+// Show
 app.get('/show-contact/:id',async (req, res) => {
     const contact = await Contact.findById({ _id: req.params.id})
     // res.json(contact)
     res.render('show-contact', ({contact}));
 });
 
+// Add
 app.get('/add-contact', (req, res) => {
   res.render('add-contact')
 });
 
 app.post('/add-contact',async (req, res) => {
+  const contact = await Contact.insertOne({ 
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    email: req.body.email,
+    phone: req.body.phone,
+    address: req.body.address
+  })
+  res.redirect("/")
+  // for json data
+  // res.send(req.body)
+  // mongoose method for minimum code (only use if form field is same as database field)
+  // await Contact.create(req.body)
+});
+
+
+// Update 
+app.get('/update-contact/:id',async (req, res) => {
+  const contact = await Contact.findById(req.params.id)
+  res.render('update-contact', {contact})
+});
+
+app.post('/update-contact/:id',async (req, res) => {
+  // mongoose method for minimum code (only use if form field is same as database field) 
+  await Contact.findByIdAndUpdate(req.params.id, req.body)
+  res.redirect("/")
 
   // for json data
   // res.send(req.body)
-  
-  const contact = await Contact.insertOne({ 
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
-      phone: req.body.phone,
-      address: req.body.address
-   })
+});
 
-  // mongoose method for minimum code 
-  // await Contact.create(req.body)
-
+// Delete
+app.get('/delete-contact/:id',async (req, res) => {
+  await Contact.findByIdAndDelete(req.params.id)
   res.redirect("/")
-
-});
-
-app.get('/update-contact', (req, res) => {
-    res.render('update-contact');
-});
-
-app.get('/delete-contact', (req, res) => {
-    res.render('delete-contact');
+  // res.render('delete-contact')
 });
  
